@@ -27,4 +27,3 @@ void decrypt(const char *in, const char *key, int length_in, char *out){
 	xor_arrays(in, key, length_in, out);
 }
 #endif
-

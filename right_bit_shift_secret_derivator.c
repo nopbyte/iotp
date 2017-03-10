@@ -12,17 +12,18 @@ void shift_bits_right(int j, char *bytes, int length) {
 	}
 }
 
-void do_sha256(char *hash, char *result) {
-	unsigned char secret[HASHLENGTH];
-	memcpy(secret, hash, HASHLENGTH);
-	unsigned char shaRes[HASHLENGTH];
-	SHA256_CTX ctx;
-	sha256_init(&ctx);
-	sha256_update(&ctx, secret, HASHLENGTH);
-	sha256_final(&ctx, shaRes);
+int do_sha256(char *hash, char *result) {
+	SHA256_CTX context;
+	if(!SHA256_Init(&context))
+			return 0;
 
-	//sha256(secret, HASHLENGTH, shaRes);
-	memcpy(result, shaRes, HASHLENGTH);
+	if(!SHA256_Update(&context, (unsigned char*)hash, HASHLENGTH))
+			return 0;
+
+	if(!SHA256_Final(result, &context))
+			return 0;
+	return 1;
+
 }
 
 void derive_secret(int j, char *hash, char *result) {
@@ -38,12 +39,12 @@ void derive_secret(int j, char *hash, char *result) {
 	}
 }
 
-void down_level(char *hash, char *result){
-	do_sha256(hash, result);
+int down_level(char *hash, char *result){
+	return do_sha256(hash, result);
 }
 
-void down_level_leaf(char *hash, char *result){
-	do_sha256(hash, result);
+int down_level_leaf(char *hash, char *result){
+	return do_sha256(hash, result);
 }
 
 //due to the properties of the bitshift and the implementation nature of this class you can derive directly from the preivous OTP :)
