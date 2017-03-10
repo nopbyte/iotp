@@ -6,6 +6,8 @@
 const int num_keys = 2;
 //careful here! the length of each string needs to be HASHLENGTH * 2
 char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf75f5","abef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf75f4"};
+//this is used to specify the same maxwidth in this example
+const int max_width_example = 8;
 
 #ifdef SERVER
 	#include "data_receiver.h"
@@ -18,7 +20,7 @@ char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf7
 		client_data1.id = 0;
 		client_data1.index = 0;
 		client_data1.depth = 0;
-		client_data1.max_width = 2;
+		client_data1.max_width = max_width_example;
 		client_data1.max_height = -1;
 		client_data1.factor_of_secret_derivation = 1;
 		for(int i = 0; i < HASHLENGTH; i++){
@@ -34,7 +36,7 @@ char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf7
 		client_data2.id = 1;
 		client_data2.index = 0;
 		client_data2.depth = 0;
-		client_data2.max_width = 2;
+		client_data2.max_width = max_width_example;
 		client_data2.max_height = -1;
 		client_data2.factor_of_secret_derivation = 1;
 		for(int i = 0; i < HASHLENGTH; i++){
@@ -45,13 +47,9 @@ char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf7
 		from_hex_to_binary(keys[1], HASHLENGTH * 2, client_data2.root_secret);
 		add_new_otp_sender_data(&client_data2);
 		//registration done
-
-		while(1){
-			char message_hex[MAX_MSG_SIZE*2];
-			for(int i = 0; i < MAX_MSG_SIZE*2; i++)
-				 message_hex[i] = '\0';
-			printf("Enter the encrypted message: ");
-			fgets(message_hex, MAX_MSG_SIZE*2, stdin);
+		char message_hex[MAX_MSG_SIZE*2];
+		printf("Enter the encrypted message: ");
+		while(fgets(message_hex, MAX_MSG_SIZE*2, stdin) != NULL){
 			//remove newline at the end of input
 			message_hex[strcspn(message_hex, "\n")] = 0;
 			char message_encrypted[MAX_MSG_SIZE];
@@ -98,7 +96,7 @@ char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf7
 		struct data client_data;
 		client_data.index = 0;
 		client_data.depth = 0;
-		client_data.max_width = 2;
+		client_data.max_width = max_width_example;
 		client_data.max_height = -1;
 		client_data.factor_of_secret_derivation = 1;
 		for(int i = 0; i < HASHLENGTH; i++){
@@ -125,10 +123,9 @@ char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf7
 			init_cipher();
 			generate_key(HASHLENGTH, client_data.root_secret);
 			*/
-		while(1){
-			char message[MAX_MSG_SIZE];
-			printf("Enter your message: ");
-			fgets(message, MAX_MSG_SIZE, stdin);
+		char message[MAX_MSG_SIZE];
+		printf("Enter your message: ");
+		while(fgets(message, MAX_MSG_SIZE, stdin)!=NULL){
 			//remove newline at the end of input
 			message[strcspn(message, "\n")] = 0;
 
@@ -148,6 +145,7 @@ char*  keys[2] = {"bbef5eb80ede92f57137875b11dd363602068c8d699fcf75f58c8d699fcf7
 				printf("ERROR: unknown error. Code: %d\n", result_code);
 				break;
 			}
+			printf("Enter your message: ");
 		}
 		return 0;
 	}
